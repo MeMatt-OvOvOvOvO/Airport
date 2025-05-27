@@ -1,5 +1,6 @@
 package org.example.airport.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,6 +27,7 @@ public class Flight {
     private double baggageLimit;
     private boolean started = false;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "flight_users",

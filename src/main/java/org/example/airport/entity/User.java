@@ -40,6 +40,6 @@ public class User implements UserDetails {
     @Override public boolean isEnabled() { return true; }
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "passengers")
+    @ManyToMany(mappedBy = "passengers", fetch = FetchType.EAGER)
     private List<Flight> flights = new ArrayList<>();
 }
