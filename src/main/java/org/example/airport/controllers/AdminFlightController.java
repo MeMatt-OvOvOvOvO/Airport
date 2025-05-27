@@ -26,4 +26,12 @@ public class AdminFlightController {
     public ResponseEntity<List<User>> getPassengers(@PathVariable Long flightId) {
         return ResponseEntity.ok(flightService.getPassengersForFlight(flightId));
     }
+
+    @DeleteMapping("/{flightId}/passengers/{userId}")
+    public ResponseEntity<String> removePassenger(
+            @PathVariable Long flightId,
+            @PathVariable Long userId
+    ) {
+        return flightService.removeUserFromFlight(flightId, userId);
+    }
 }

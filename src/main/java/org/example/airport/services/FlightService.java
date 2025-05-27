@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.airport.entity.Flight;
 import org.example.airport.entity.User;
 import org.example.airport.repository.FlightRepository;
+import org.example.airport.repository.UserRepository;
 import org.example.airport.strategy.BaggageCheckStrategy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ public class FlightService {
 
     private final FlightRepository flightRepository;
     private final BaggageCheckStrategy baggageCheckStrategy;
+    private final UserRepository userRepository;
 
     public Flight addFlight(Flight flight) {
         return flightRepository.save(flight);
@@ -55,5 +57,28 @@ public class FlightService {
         Flight flight = flightRepository.findById(flightId)
                 .orElseThrow(() -> new RuntimeException("Lot nie istnieje"));
         return flight.getPassengers();
+    }
+
+    public ResponseEntity<String> removeUserFromFlight(Long flightId, Long userId) {
+        Flight flight = flightRepository.findById(flightId)
+                .orElse(null);
+        User user = userRepository.findById(userId)
+                .orElse(null);
+
+        if (flight == null || user == null) {
+            return ResponseEntity.badRequest().body("Lot lub użytkownik nie istnieje.");
+        }
+
+        if (!flight.getPassengers().contains(user)) {
+            return ResponseEntity.badRequest().body("Użytkownik nie jest zapisany na ten lot.");
+        }
+
+        flight.getPassengers().remove(user);
+        user.getFlights().remove(flight);
+
+        flightRepository.save(flight);
+        userRepository.save(user);
+
+        return ResponseEntity.ok("Pasażer został usunięty z lotu.");
     }
 }
