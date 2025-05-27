@@ -7,6 +7,8 @@ import org.example.airport.repository.FlightRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class FlightService {
@@ -41,5 +43,9 @@ public class FlightService {
         flight.setAvailableSeats(flight.getAvailableSeats() - 1);
         flightRepository.save(flight);
         return ResponseEntity.ok("Zapisano na lot.");
+    }
+
+    public List<Flight> getAvailableFlights() {
+        return flightRepository.findByStartedFalseAndAvailableSeatsGreaterThan(0);
     }
 }

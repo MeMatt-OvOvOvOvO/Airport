@@ -1,5 +1,6 @@
 package org.example.airport.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -38,6 +39,7 @@ public class User implements UserDetails {
     @Override public boolean isCredentialsNonExpired() { return true; }
     @Override public boolean isEnabled() { return true; }
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "passengers")
     private List<Flight> flights = new ArrayList<>();
 }
