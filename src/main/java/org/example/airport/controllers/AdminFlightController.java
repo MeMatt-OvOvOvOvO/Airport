@@ -2,14 +2,16 @@ package org.example.airport.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.example.airport.entity.Flight;
+import org.example.airport.entity.User;
 import org.example.airport.services.FlightService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/admin/flights")
 @RequiredArgsConstructor
-public class FlightController {
+public class AdminFlightController {
 
     private final FlightService flightService;
 

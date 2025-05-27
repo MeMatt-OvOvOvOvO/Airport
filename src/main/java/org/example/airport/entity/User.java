@@ -5,10 +5,14 @@ import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "users")
 @Data
 @NoArgsConstructor
@@ -33,4 +37,7 @@ public class User implements UserDetails {
     @Override public boolean isAccountNonLocked() { return true; }
     @Override public boolean isCredentialsNonExpired() { return true; }
     @Override public boolean isEnabled() { return true; }
+
+    @ManyToMany(mappedBy = "passengers")
+    private List<Flight> flights = new ArrayList<>();
 }
