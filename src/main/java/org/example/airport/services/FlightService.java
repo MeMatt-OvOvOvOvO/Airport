@@ -48,4 +48,10 @@ public class FlightService {
     public List<Flight> getAvailableFlights() {
         return flightRepository.findByStartedFalseAndAvailableSeatsGreaterThan(0);
     }
+
+    public List<User> getPassengersForFlight(Long flightId) {
+        Flight flight = flightRepository.findById(flightId)
+                .orElseThrow(() -> new RuntimeException("Lot nie istnieje"));
+        return flight.getPassengers();
+    }
 }
