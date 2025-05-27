@@ -24,7 +24,7 @@ public class AuthService {
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(request.getRole());
-        user.setBaggageWeight(0);
+        user.setBaggageWeight(request.getBaggageWeight());
         userRepository.save(user);
     }
 }

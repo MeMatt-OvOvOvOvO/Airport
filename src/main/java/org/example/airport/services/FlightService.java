@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.airport.entity.Flight;
 import org.example.airport.entity.User;
 import org.example.airport.repository.FlightRepository;
+import org.example.airport.strategy.BaggageCheckStrategy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import java.util.List;
 public class FlightService {
 
     private final FlightRepository flightRepository;
+    private final BaggageCheckStrategy baggageCheckStrategy;
 
     public Flight addFlight(Flight flight) {
         return flightRepository.save(flight);
@@ -27,8 +29,8 @@ public class FlightService {
             return ResponseEntity.badRequest().body("Lot już wystartował.");
         }
 
-        if (user.getBaggageWeight() > flight.getBaggageLimit()) {
-            return ResponseEntity.badRequest().body("Twój bagaż jest za ciężki.");
+        if (!baggageCheckStrategy.isAllowed(user.getBaggageWeight(), flight.getBaggageLimit())) {
+            return ResponseEntity.badRequest().body("Twój bagaż przekracza limit i nie możesz zapisać się na lot.");
         }
 
         if (flight.getPassengers().contains(user)) {
