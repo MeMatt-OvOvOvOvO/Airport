@@ -39,4 +39,9 @@ public class AdminFlightController {
     public ResponseEntity<String> startFlight(@PathVariable Long flightId) {
         return flightService.startFlight(flightId);
     }
+
+    @GetMapping("/history")
+    public ResponseEntity<List<Flight>> getAllStartedFlights() {
+        return ResponseEntity.ok(flightService.getAllStartedFlights());
+    }
 }

@@ -99,4 +99,16 @@ public class FlightService {
 
         return ResponseEntity.ok("Lot wystartował – użytkownicy zostali powiadomieni.");
     }
+
+    public List<Flight> getUserFlightHistory(User user) {
+        return user.getFlights().stream()
+                .filter(Flight::isStarted)
+                .toList();
+    }
+
+    public List<Flight> getAllStartedFlights() {
+        return flightRepository.findAll().stream()
+                .filter(Flight::isStarted)
+                .toList();
+    }
 }

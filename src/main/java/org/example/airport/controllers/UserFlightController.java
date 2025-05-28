@@ -42,4 +42,9 @@ public class UserFlightController {
         userRepository.save(user);
         return ResponseEntity.ok("Waga bagażu zaktualizowana.");
     }
+
+    @GetMapping("/history")
+    public ResponseEntity<List<Flight>> getMyFlightHistory(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(flightService.getUserFlightHistory(user));
+    }
 }
