@@ -34,4 +34,9 @@ public class AdminFlightController {
     ) {
         return flightService.removeUserFromFlight(flightId, userId);
     }
+
+    @PutMapping("/{flightId}/start")
+    public ResponseEntity<String> startFlight(@PathVariable Long flightId) {
+        return flightService.startFlight(flightId);
+    }
 }

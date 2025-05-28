@@ -81,4 +81,22 @@ public class FlightService {
 
         return ResponseEntity.ok("Pasażer został usunięty z lotu.");
     }
+
+    public ResponseEntity<String> startFlight(Long flightId) {
+        Flight flight = flightRepository.findById(flightId)
+                .orElse(null);
+
+        if (flight == null) {
+            return ResponseEntity.badRequest().body("Lot nie istnieje.");
+        }
+
+        if (flight.isStarted()) {
+            return ResponseEntity.badRequest().body("Lot już został wystartowany.");
+        }
+
+        flight.setStarted(true);
+        flightRepository.save(flight);
+
+        return ResponseEntity.ok("Lot wystartował – użytkownicy zostali powiadomieni.");
+    }
 }
