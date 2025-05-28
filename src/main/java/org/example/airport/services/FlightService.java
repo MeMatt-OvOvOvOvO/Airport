@@ -10,6 +10,7 @@ import org.example.airport.strategy.BaggageCheckStrategy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -117,27 +118,27 @@ public class FlightService {
     }
 
     public List<FlightReportDto> generateFlightReports() {
-        return flightRepository.findAll().stream()
-                .filter(Flight::isStarted)
-                .map(flight -> {
-                    FlightReportDto dto = new FlightReportDto();
-                    dto.setFlightId(flight.getId());
-                    dto.setDestination(flight.getDestination());
-                    dto.setStarted(flight.isStarted());
-                        dto.setSeatLimit(flight.getAvailableSeats());
-                    dto.setBaggageLimit(flight.getBaggageLimit());
+        List<Flight> flights = flightRepository.findAll();
 
-                    List<FlightReportDto.PassengerDto> passengers = flight.getPassengers().stream().map(user -> {
-                        FlightReportDto.PassengerDto p = new FlightReportDto.PassengerDto();
-                        p.setId(user.getId());
-                        p.setUsername(user.getUsername());
-                        p.setBaggageWeight(user.getBaggageWeight());
-                        return p;
-                    }).toList();
+        List<FlightReportDto> reportList = new ArrayList<>();
 
-                    dto.setPassengers(passengers);
-                    return dto;
-                })
-                .toList();
+        for (Flight flight : flights) {
+            double totalBaggage = 0.0;
+            List<User> passengers = flight.getPassengers();
+            for (User user : passengers) {
+                totalBaggage += user.getBaggageWeight();
+            }
+
+            FlightReportDto dto = new FlightReportDto();
+            dto.setFlightId(flight.getId());
+            dto.setDestination(flight.getDestination());
+            dto.setDepartureTime(flight.getDepartureTime());
+            dto.setPassengerCount(passengers.size());
+            dto.setTotalBaggageWeight(totalBaggage);
+
+            reportList.add(dto);
+        }
+
+        return reportList;
     }
 }

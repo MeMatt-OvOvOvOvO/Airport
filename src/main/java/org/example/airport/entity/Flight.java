@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,8 @@ public class Flight {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private List<User> passengers = new ArrayList<>();
+
+    private LocalDateTime departureTime;
 
     public int getAvailableSeats() {
         return availableSeats - passengers.size();

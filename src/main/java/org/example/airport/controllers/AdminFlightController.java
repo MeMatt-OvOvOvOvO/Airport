@@ -6,11 +6,14 @@ import lombok.RequiredArgsConstructor;
 import org.example.airport.dto.FlightReportDto;
 import org.example.airport.entity.Flight;
 import org.example.airport.entity.User;
+import org.example.airport.repository.FlightRepository;
+import org.example.airport.repository.UserRepository;
 import org.example.airport.services.FlightService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.bind.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -20,6 +23,8 @@ import java.util.List;
 public class AdminFlightController {
 
     private final FlightService flightService;
+    private final FlightRepository flightRepository;
+    private final UserRepository userRepository;
 
     @Operation(
             summary = "Utwórz nowy lot",
@@ -27,6 +32,9 @@ public class AdminFlightController {
     )
     @PostMapping
     public ResponseEntity<Flight> create(@RequestBody Flight flight) {
+        if (flight.getDepartureTime() == null) {
+            flight.setDepartureTime(LocalDateTime.now().plusDays(1));
+        }
         return ResponseEntity.ok(flightService.addFlight(flight));
     }
 
@@ -76,5 +84,12 @@ public class AdminFlightController {
     @GetMapping("/report")
     public ResponseEntity<List<FlightReportDto>> getReport() {
         return ResponseEntity.ok(flightService.generateFlightReports());
+    }
+
+    @DeleteMapping("/admin/clear")
+    public ResponseEntity<String> clearAll() {
+        flightRepository.deleteAll();
+        userRepository.deleteAll();
+        return ResponseEntity.ok("Wszystkie dane usunięte.");
     }
 }

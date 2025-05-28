@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.example.airport.dto.BaggageUpdateRequest;
+import org.example.airport.dto.FlightDto;
 import org.example.airport.entity.Flight;
 import org.example.airport.repository.UserRepository;
 import org.example.airport.services.FlightService;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -31,15 +33,6 @@ public class UserFlightController {
             @AuthenticationPrincipal User user
     ) {
         return flightService.registerToFlight(flightId, user);
-    }
-
-    @Operation(
-            summary = "Pobierz swoje loty",
-            description = "Zwraca listę lotów, na które aktualnie zapisany jest zalogowany użytkownik."
-    )
-    @GetMapping("/my")
-    public ResponseEntity<List<Flight>> getMyFlights(@AuthenticationPrincipal User user) {
-        return ResponseEntity.ok(user.getFlights());
     }
 
     @Operation(
@@ -63,5 +56,18 @@ public class UserFlightController {
     @GetMapping("/history")
     public ResponseEntity<List<Flight>> getMyFlightHistory(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(flightService.getUserFlightHistory(user));
+    }
+
+    @Operation(
+            summary = "Pobierz swoje loty",
+            description = "Zwraca listę lotów, na które aktualnie zapisany jest zalogowany użytkownik."
+    )
+    @GetMapping("/upcoming")
+    public ResponseEntity<List<FlightDto>> getMyUpcomingFlights(@AuthenticationPrincipal User user) {
+        List<FlightDto> upcoming = user.getFlights().stream()
+                .filter(f -> f.getDepartureTime().isAfter(LocalDateTime.now()))
+                .map(f -> new FlightDto(f.getId(), f.getDestination(), f.getDepartureTime()))
+                .toList();
+        return ResponseEntity.ok(upcoming);
     }
 }
