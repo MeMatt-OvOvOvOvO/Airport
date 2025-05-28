@@ -1,5 +1,8 @@
 package org.example.airport.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.example.airport.dto.BaggageUpdateRequest;
 import org.example.airport.entity.Flight;
@@ -15,11 +18,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/user/flights")
 @RequiredArgsConstructor
+@Tag(name = "Loty użytkownika", description = "Operacje dostępne dla użytkowników (rola USER)")
 public class UserFlightController {
 
     private final FlightService flightService;
     private final UserRepository userRepository;
 
+    @Operation(summary = "Zapisz się na lot", description = "Użytkownik zapisuje się na dostępny lot")
     @PutMapping("/{flightId}/register")
     public ResponseEntity<String> registerToFlight(
             @PathVariable Long flightId,
@@ -28,11 +33,19 @@ public class UserFlightController {
         return flightService.registerToFlight(flightId, user);
     }
 
+    @Operation(
+            summary = "Pobierz swoje loty",
+            description = "Zwraca listę lotów, na które aktualnie zapisany jest zalogowany użytkownik."
+    )
     @GetMapping("/my")
     public ResponseEntity<List<Flight>> getMyFlights(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(user.getFlights());
     }
 
+    @Operation(
+            summary = "Zaktualizuj wagę bagażu",
+            description = "Pozwala zalogowanemu użytkownikowi zaktualizować wagę swojego bagażu przed zapisaniem się na lot."
+    )
     @PutMapping("/baggage")
     public ResponseEntity<String> updateBaggage(
             @RequestBody BaggageUpdateRequest request,
@@ -43,6 +56,10 @@ public class UserFlightController {
         return ResponseEntity.ok("Waga bagażu zaktualizowana.");
     }
 
+    @Operation(
+            summary = "Pobierz historię lotów",
+            description = "Zwraca listę lotów zakończonych, w których uczestniczył zalogowany użytkownik."
+    )
     @GetMapping("/history")
     public ResponseEntity<List<Flight>> getMyFlightHistory(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(flightService.getUserFlightHistory(user));
