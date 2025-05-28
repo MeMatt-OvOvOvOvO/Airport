@@ -28,11 +28,15 @@ public class Flight {
     private boolean started = false;
 
     @JsonIgnore
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "flight_users",
             joinColumns = @JoinColumn(name = "flight_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private List<User> passengers = new ArrayList<>();
+
+    public int getAvailableSeats() {
+        return availableSeats - passengers.size();
+    }
 }

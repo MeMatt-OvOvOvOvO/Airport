@@ -1,6 +1,7 @@
 package org.example.airport.controllers;
 
 import lombok.RequiredArgsConstructor;
+import org.example.airport.dto.FlightReportDto;
 import org.example.airport.entity.Flight;
 import org.example.airport.entity.User;
 import org.example.airport.services.FlightService;
@@ -43,5 +44,10 @@ public class AdminFlightController {
     @GetMapping("/history")
     public ResponseEntity<List<Flight>> getAllStartedFlights() {
         return ResponseEntity.ok(flightService.getAllStartedFlights());
+    }
+
+    @GetMapping("/report")
+    public ResponseEntity<List<FlightReportDto>> getReport() {
+        return ResponseEntity.ok(flightService.generateFlightReports());
     }
 }

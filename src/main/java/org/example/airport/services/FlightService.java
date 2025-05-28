@@ -1,6 +1,7 @@
 package org.example.airport.services;
 
 import lombok.RequiredArgsConstructor;
+import org.example.airport.dto.FlightReportDto;
 import org.example.airport.entity.Flight;
 import org.example.airport.entity.User;
 import org.example.airport.repository.FlightRepository;
@@ -24,7 +25,7 @@ public class FlightService {
     }
 
     public ResponseEntity<String> registerToFlight(Long flightId, User user) {
-        Flight flight = flightRepository.findById(flightId)
+        Flight flight = flightRepository.findByIdWithPassengers(flightId)
                 .orElseThrow(() -> new RuntimeException("Flight not found"));
 
         if (flight.isStarted()) {
@@ -35,7 +36,10 @@ public class FlightService {
             return ResponseEntity.badRequest().body("Twój bagaż przekracza limit i nie możesz zapisać się na lot.");
         }
 
-        if (flight.getPassengers().contains(user)) {
+        boolean alreadyRegistered = flight.getPassengers().stream()
+                .anyMatch(passenger -> passenger.getId().equals(user.getId()));
+
+        if (alreadyRegistered) {
             return ResponseEntity.badRequest().body("Jesteś już zapisany na ten lot.");
         }
 
@@ -109,6 +113,31 @@ public class FlightService {
     public List<Flight> getAllStartedFlights() {
         return flightRepository.findAll().stream()
                 .filter(Flight::isStarted)
+                .toList();
+    }
+
+    public List<FlightReportDto> generateFlightReports() {
+        return flightRepository.findAll().stream()
+                .filter(Flight::isStarted)
+                .map(flight -> {
+                    FlightReportDto dto = new FlightReportDto();
+                    dto.setFlightId(flight.getId());
+                    dto.setDestination(flight.getDestination());
+                    dto.setStarted(flight.isStarted());
+                        dto.setSeatLimit(flight.getAvailableSeats());
+                    dto.setBaggageLimit(flight.getBaggageLimit());
+
+                    List<FlightReportDto.PassengerDto> passengers = flight.getPassengers().stream().map(user -> {
+                        FlightReportDto.PassengerDto p = new FlightReportDto.PassengerDto();
+                        p.setId(user.getId());
+                        p.setUsername(user.getUsername());
+                        p.setBaggageWeight(user.getBaggageWeight());
+                        return p;
+                    }).toList();
+
+                    dto.setPassengers(passengers);
+                    return dto;
+                })
                 .toList();
     }
 }
