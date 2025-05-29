@@ -58,9 +58,44 @@ Pozwala to serwisowi rejestracji użytkownika działać niezależnie od konkretn
 
 ---
 
-## 📦 Uruchamianie
+## Opis
 
-1. Uruchom kontener PostgreSQL:
+1. Docker:
 
-```bash
-docker compose up -d
+![Docker](src/images/ssdocker.png)
+
+2. Struktura projektu:
+
+![Structure](src/images/structure.png)
+
+3. Spring Security:
+
+![SpringSec](src/images/SpringSecurity.png)
+
+4. REST Controller:
+
+![REST](src/images/RESTcontroller.png)
+
+5. Entity:
+
+User:
+![User](src/images/user.png)
+
+Flight:
+![Flight](src/images/flight.png)
+
+6. Swagger UI:
+
+![swaggerui](src/images/swaggerUi.png)
+
+7. Diagram ERD:
+
+![ERD](src/images/erd.png)
+
+8. Flyway:
+
+![flyway](src/images/flyway.png)
+
+9. Testy (JUnit i JACOCO):
+
+![JACOCO](src/images/jacoco.png)
