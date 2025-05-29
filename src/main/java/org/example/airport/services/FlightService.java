@@ -141,4 +141,8 @@ public class FlightService {
 
         return reportList;
     }
+
+    public List<Flight> getAllFlights() {
+        return flightRepository.findAll();
+    }
 }
