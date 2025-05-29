@@ -33,6 +33,18 @@ Implementacja
 
 ---
 
+## Polimorfizm w aplikacji
+
+W aplikacji zastosowano polimorfizm dynamiczny w celu elastycznego zarządzania logiką
+walidacji bagażu w zależności od klasy podróży (ekonomiczna, biznesowa).
+Zamiast tworzyć rozbudowane instrukcje warunkowe, wykorzystano wspólny interfejs
+i różne implementacje strategii, które są wybierane w czasie działania programu.
+Pozwala to serwisowi rejestracji użytkownika działać niezależnie od konkretnej klasy
+— wystarczy, że odwołuje się do wspólnego typu. Dzięki temu kod jest czytelniejszy,
+łatwiejszy w rozbudowie i zgodny z zasadami programowania obiektowego.
+
+---
+
 ## Technologia
 
 - Java 17
