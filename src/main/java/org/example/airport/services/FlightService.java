@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.airport.dto.FlightReportDto;
 import org.example.airport.entity.Flight;
 import org.example.airport.entity.User;
+import org.example.airport.enums.TravelClass;
 import org.example.airport.repository.FlightRepository;
 import org.example.airport.repository.UserRepository;
 import org.example.airport.strategy.BaggageCheckStrategy;
@@ -34,7 +35,15 @@ public class FlightService {
             return ResponseEntity.badRequest().body("Lot już wystartował.");
         }
 
-        BaggageCheckStrategy strategy = strategyFactory.getStrategy(user.getTravelClass());
+        TravelClass travelClass = user.getTravelClass();
+        if (travelClass == null) {
+            return ResponseEntity.badRequest().body("Nie ustawiono klasy podróży.");
+        }
+
+        BaggageCheckStrategy strategy = strategyFactory.getStrategy(travelClass);
+        if (strategy == null) {
+            return ResponseEntity.internalServerError().body("Brak strategii dla klasy podróży: " + travelClass);
+        }
 
         if (!strategy.isAllowed(user.getBaggageWeight(), flight.getBaggageLimit())) {
             return ResponseEntity.badRequest().body("Twój bagaż przekracza limit i nie możesz zapisać się na lot.");
@@ -138,6 +147,8 @@ public class FlightService {
             dto.setDepartureTime(flight.getDepartureTime());
             dto.setPassengerCount(passengers.size());
             dto.setTotalBaggageWeight(totalBaggage);
+            dto.setSeatLimit(flight.getAvailableSeats());
+            dto.setBaggageLimit(flight.getBaggageLimit());
 
             reportList.add(dto);
         }
