@@ -14,6 +14,25 @@ Aplikacja webowa typu backend-only, pozwalająca na:
 - Pokrycie testami jednostkowymi + Jacoco
 - Dokumentację REST API w Swagger UI
 
+---
+
+## Wzorzec projektowy Strategy
+
+Działanie
+- Użytkownik podczas rejestracji wybiera klasę podróży: ECONOMY lub BUSINESS.
+- Na tej podstawie przypisywana jest odpowiednia strategia:
+- EconomyBaggageStrategy – ścisłe sprawdzanie limitu.
+- BusinessBaggageStrategy – dozwolone przekroczenie limitu o 10 kg.
+
+Implementacja
+- Interfejs: BaggageCheckStrategy
+- Implementacje:
+- EconomyBaggageStrategy – userBaggage <= flightLimit
+- BusinessBaggageStrategy – userBaggage <= flightLimit + 10
+- Strategia jest dynamicznie wybierana na podstawie pola travelClass z obiektu User.
+
+---
+
 ## Technologia
 
 - Java 17

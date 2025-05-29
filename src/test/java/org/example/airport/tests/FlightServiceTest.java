@@ -3,10 +3,12 @@ package org.example.airport.tests;
 import org.example.airport.dto.FlightReportDto;
 import org.example.airport.entity.Flight;
 import org.example.airport.entity.User;
+import org.example.airport.enums.TravelClass;
 import org.example.airport.repository.FlightRepository;
 import org.example.airport.repository.UserRepository;
 import org.example.airport.services.FlightService;
 import org.example.airport.strategy.BaggageCheckStrategy;
+import org.example.airport.strategy.BaggageCheckStrategyFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,6 +34,9 @@ public class FlightServiceTest {
     private BaggageCheckStrategy baggageCheckStrategy;
 
     @Mock
+    private BaggageCheckStrategyFactory strategyFactory;
+
+    @Mock
     private UserRepository userRepository;
 
     @InjectMocks
@@ -48,8 +53,10 @@ public class FlightServiceTest {
         User user = new User();
         user.setId(2L);
         user.setBaggageWeight(15.0);
+        user.setTravelClass(TravelClass.ECONOMY);
 
         when(flightRepository.findByIdWithPassengers(1L)).thenReturn(Optional.of(flight));
+        when(strategyFactory.getStrategy(TravelClass.ECONOMY)).thenReturn(baggageCheckStrategy);
         when(baggageCheckStrategy.isAllowed(anyDouble(), anyDouble())).thenReturn(true);
         when(flightRepository.save(any(Flight.class))).thenReturn(flight);
 
@@ -72,8 +79,10 @@ public class FlightServiceTest {
         User user = new User();
         user.setId(2L);
         user.setBaggageWeight(15.0);
+        user.setTravelClass(TravelClass.ECONOMY);
 
         when(flightRepository.findByIdWithPassengers(1L)).thenReturn(Optional.of(flight));
+        when(strategyFactory.getStrategy(TravelClass.ECONOMY)).thenReturn(baggageCheckStrategy);
         when(baggageCheckStrategy.isAllowed(15.0, 10.0)).thenReturn(false);
 
         ResponseEntity<String> response = flightService.registerToFlight(1L, user);
@@ -86,6 +95,7 @@ public class FlightServiceTest {
     public void shouldRejectDuplicateRegistration() {
         User user = new User();
         user.setId(1L);
+        user.setTravelClass(TravelClass.ECONOMY);
 
         Flight flight = new Flight();
         flight.setId(1L);
@@ -96,6 +106,7 @@ public class FlightServiceTest {
         flight.setPassengers(passengers);
 
         when(flightRepository.findByIdWithPassengers(1L)).thenReturn(Optional.of(flight));
+        when(strategyFactory.getStrategy(TravelClass.ECONOMY)).thenReturn(baggageCheckStrategy);
         when(baggageCheckStrategy.isAllowed(anyDouble(), anyDouble())).thenReturn(true);
 
         ResponseEntity<String> response = flightService.registerToFlight(1L, user);
@@ -149,6 +160,7 @@ public class FlightServiceTest {
     public void shouldGenerateFlightReport() {
         User user = new User();
         user.setBaggageWeight(20.0);
+        user.setTravelClass(TravelClass.ECONOMY);
 
         Flight flight = new Flight();
         flight.setId(1L);
@@ -301,8 +313,10 @@ public class FlightServiceTest {
         User user = new User();
         user.setId(3L);
         user.setBaggageWeight(10.0);
+        user.setTravelClass(TravelClass.ECONOMY);
 
         when(flightRepository.findByIdWithPassengers(1L)).thenReturn(Optional.of(flight));
+        when(strategyFactory.getStrategy(TravelClass.ECONOMY)).thenReturn(baggageCheckStrategy);
         when(baggageCheckStrategy.isAllowed(anyDouble(), anyDouble())).thenReturn(true);
 
         ResponseEntity<String> response = flightService.registerToFlight(1L, user);

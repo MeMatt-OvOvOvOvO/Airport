@@ -14,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
+import static org.example.airport.enums.TravelClass.BUSINESS;
+import static org.example.airport.enums.TravelClass.ECONOMY;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -31,7 +33,7 @@ public class AuthServiceTest {
 
     @Test
     public void shouldRegisterNewUser() {
-        RegisterRequest request = new RegisterRequest("john", "password123", "USER", 12.0);
+        RegisterRequest request = new RegisterRequest("john", "password123", "USER", 12.0, BUSINESS);
 
         when(userRepository.findByUsername("john")).thenReturn(Optional.empty());
         when(passwordEncoder.encode("password123")).thenReturn("encodedPassword");
@@ -43,7 +45,7 @@ public class AuthServiceTest {
 
     @Test
     public void shouldThrowExceptionWhenUsernameExists() {
-        RegisterRequest request = new RegisterRequest("existingUser", "password", "USER", 10.0);
+        RegisterRequest request = new RegisterRequest("existingUser", "password", "USER", 10.0, ECONOMY);
 
         when(userRepository.findByUsername("existingUser")).thenReturn(Optional.of(new User()));
 

@@ -3,6 +3,7 @@ package org.example.airport.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.airport.enums.TravelClass;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -28,6 +29,9 @@ public class User implements UserDetails {
     private String password;
     private String role;
     private double baggageWeight;
+
+    @Enumerated(EnumType.STRING)
+    private TravelClass travelClass;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

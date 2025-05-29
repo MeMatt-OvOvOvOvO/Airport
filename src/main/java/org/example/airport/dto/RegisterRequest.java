@@ -3,6 +3,7 @@ package org.example.airport.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.example.airport.enums.TravelClass;
 
 @Data
 @Schema(name = "RegisterRequest", description = "Dane potrzebne do rejestracji nowego użytkownika")
@@ -20,4 +21,7 @@ public class RegisterRequest {
 
     @Schema(description = "Waga bagażu użytkownika", example = "12.5", required = true)
     private double baggageWeight;
+
+    @Schema(description = "Klasa podróżna użytkownika", example = "BUSINESS", required = true)
+    private TravelClass travelClass;
 }

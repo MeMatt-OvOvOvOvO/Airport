@@ -2,6 +2,7 @@ package org.example.airport.services;
 
 import org.example.airport.dto.RegisterRequest;
 import org.example.airport.entity.User;
+import org.example.airport.enums.TravelClass;
 import org.example.airport.exceptions.UsernameAlreadyExistsException;
 import org.example.airport.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(request.getRole());
         user.setBaggageWeight(request.getBaggageWeight());
+        user.setTravelClass(request.getTravelClass() != null ? request.getTravelClass() : TravelClass.ECONOMY);
         userRepository.save(user);
     }
 }

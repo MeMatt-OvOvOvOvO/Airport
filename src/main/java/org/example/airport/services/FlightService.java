@@ -7,6 +7,7 @@ import org.example.airport.entity.User;
 import org.example.airport.repository.FlightRepository;
 import org.example.airport.repository.UserRepository;
 import org.example.airport.strategy.BaggageCheckStrategy;
+import org.example.airport.strategy.BaggageCheckStrategyFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,7 @@ import java.util.List;
 public class FlightService {
 
     private final FlightRepository flightRepository;
-    private final BaggageCheckStrategy baggageCheckStrategy;
+    private final BaggageCheckStrategyFactory strategyFactory;
     private final UserRepository userRepository;
 
     public Flight addFlight(Flight flight) {
@@ -33,7 +34,9 @@ public class FlightService {
             return ResponseEntity.badRequest().body("Lot już wystartował.");
         }
 
-        if (!baggageCheckStrategy.isAllowed(user.getBaggageWeight(), flight.getBaggageLimit())) {
+        BaggageCheckStrategy strategy = strategyFactory.getStrategy(user.getTravelClass());
+
+        if (!strategy.isAllowed(user.getBaggageWeight(), flight.getBaggageLimit())) {
             return ResponseEntity.badRequest().body("Twój bagaż przekracza limit i nie możesz zapisać się na lot.");
         }
 
